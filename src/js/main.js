@@ -18,7 +18,7 @@ var movers = [];
 var count_movers = 0;
 var unit_mover = 300;
 
-var gravity = new Vector2(0, 1);
+var gravity = new Vector2(0, 2);
 
 var init = function() {
   poolMover();
@@ -89,19 +89,16 @@ var updateMover = function () {
         var mover_normal = mover.velocity.clone().sub(target.velocity).normalize();
         var target_normal = target.velocity.clone().sub(mover.velocity).normalize();
 
+        var v1 = mover.acceleration.clone();
+        var m1 = mover.mass;
+        var v2 = target.acceleration.clone();
+        var m2 = target.mass;
+
         mover.velocity.sub(target_normal.clone().multScalar(overlap / 2));
         target.velocity.sub(mover_normal.clone().multScalar(overlap / 2));
-
-        mover.rebound(mover_normal);
-        target.rebound(target_normal);
-
-        // var v1 = mover.acceleration.clone();
-        // var m1 = mover.mass;
-        // var v2 = target.acceleration.clone();
-        // var m2 = target.mass;
         
-        // mover.acceleration = v1.clone().multScalar(m1 - m2).add(v2.clone().multScalar(m2 * 2)).divScalar(m1 + m2).multScalar(0.8);
-        // target.acceleration = v2.clone().multScalar(m2 - m1).add(v1.clone().multScalar(m1 * 2)).divScalar(m1 + m2).multScalar(0.8);
+        mover.acceleration = v1.clone().multScalar(m1 - m2).add(v2.clone().multScalar(m2 * 2)).divScalar(m1 + m2).multScalar(0.8);
+        target.acceleration = v2.clone().multScalar(m2 - m1).add(v1.clone().multScalar(m1 * 2)).divScalar(m1 + m2).multScalar(0.8);
       }
     }
     mover.applyFriction();
@@ -126,7 +123,7 @@ var activateMover = function () {
     if (mover.is_active) continue;
     
     radian = Util.getRadian(Util.getRandomInt(70, 110));
-    scalar = Util.getRandomInt(20, 60);
+    scalar = Util.getRandomInt(10, 20);
     x = Math.cos(radian) * scalar;
     y = Math.sin(radian) * scalar;
     force.set(x, y);

@@ -57,7 +57,7 @@ var exports = function(){
     rebound: function(vector) {
       var dot = this.acceleration.clone().dot(vector);
       this.acceleration.sub(vector.multScalar(2 * dot));
-      this.acceleration.multScalar(0.8);
+      this.acceleration.multScalar(0.5);
     },
     direct: function(vector) {
       var v = vector.clone().sub(this.position);

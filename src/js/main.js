@@ -18,7 +18,7 @@ var movers = [];
 var count_movers = 0;
 var unit_mover = 300;
 
-var gravity = new Vector2(0, 2);
+var gravity = new Vector2(0, 1.2);
 
 var init = function() {
   poolMover();
@@ -45,10 +45,10 @@ var updateMover = function () {
     
     if (!mover.is_active) continue;
 
-    if (mover.acceleration.length() < 1) {
+    if (mover.acceleration.length() < 1.2) {
       mover.time ++;
     }
-    if (mover.time > 300) {
+    if (mover.time > 500) {
       mover.radius -= mover.radius / 10;
     }
     if (mover.radius < 10) {
@@ -60,25 +60,23 @@ var updateMover = function () {
     if (mover.position.y - mover.radius < 0) {
       // var normal = new Vector2(0, 1);
       // mover.velocity.y = mover.radius;
-      // mover.rebound(normal);
+      // mover.rebound(normal, 0.6);
     }
     if (mover.position.y + mover.radius > body_height) {
       var normal = new Vector2(0, -1);
       mover.velocity.y = body_height - mover.radius;
-      mover.rebound(normal);
+      mover.rebound(normal, 0.6);
     }
     if (mover.position.x - mover.radius < 0) {
       var normal = new Vector2(1, 0);
       mover.velocity.x = mover.radius;
-      mover.rebound(normal);
+      mover.rebound(normal, 0.6);
     }
     if (mover.position.x + mover.radius > body_width) {
       var normal = new Vector2(-1, 0);
       mover.velocity.x = body_width - mover.radius;
-      mover.rebound(normal);
+      mover.rebound(normal, 0.6);
     }
-    mover.applyForce(gravity);
-    mover.applyFriction();
     //mover同士の衝突判定
     for (var index = 0; index < movers.length; index++) {
       if (index === i) continue;
@@ -92,18 +90,13 @@ var updateMover = function () {
         var mover_normal = mover.velocity.clone().sub(target.velocity).normalize();
         var target_normal = target.velocity.clone().sub(mover.velocity).normalize();
 
-        var v1 = mover.acceleration.clone();
-        var m1 = mover.mass;
-        var v2 = target.acceleration.clone();
-        var m2 = target.mass;
-
         mover.velocity.sub(target_normal.clone().multScalar(overlap / 2));
         target.velocity.sub(mover_normal.clone().multScalar(overlap / 2));
-        
-        mover.acceleration = v1.clone().multScalar(m1 - m2).add(v2.clone().multScalar(m2 * 2)).divScalar(m1 + m2).multScalar(0.8);
-        target.acceleration = v2.clone().multScalar(m2 - m1).add(v1.clone().multScalar(m1 * 2)).divScalar(m1 + m2).multScalar(0.8);
+        mover.rebound(target_normal, 0.5);
       }
     }
+    mover.applyForce(gravity);
+    mover.applyFriction();
     mover.updateVelocity();
     mover.updatePosition();
     mover.draw(ctx);

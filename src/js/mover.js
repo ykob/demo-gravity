@@ -21,7 +21,7 @@ var exports = function(){
   
   Mover.prototype = {
     init: function(vector, size) {
-      this.radius = Util.getRandomInt(size, size * 5);
+      this.radius = Util.getRandomInt(size, size * 4);
       this.mass = this.radius / 10;
       this.position = vector.clone();
       this.velocity = vector.clone();
@@ -54,10 +54,10 @@ var exports = function(){
       var force = Force.hook(this.velocity, this.anchor, this.k);
       this.applyForce(force);
     },
-    rebound: function(vector) {
+    rebound: function(vector, e) {
       var dot = this.acceleration.clone().dot(vector);
       this.acceleration.sub(vector.multScalar(2 * dot));
-      this.acceleration.multScalar(0.666);
+      this.acceleration.multScalar(e);
     },
     direct: function(vector) {
       var v = vector.clone().sub(this.position);

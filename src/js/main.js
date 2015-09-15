@@ -77,9 +77,12 @@ var updateMover = function () {
       mover.velocity.x = body_width - mover.radius;
       mover.rebound(normal);
     }
-
+    mover.applyForce(gravity);
+    mover.applyFriction();
     //mover同士の衝突判定
-    for (var index = i + 1; index < movers.length; index++) {
+    for (var index = 0; index < movers.length; index++) {
+      if (index === i) continue;
+      
       var target = movers[index];
       var distance = mover.velocity.distanceTo(movers[index].velocity);
       var rebound_distance = mover.radius + target.radius;
@@ -101,8 +104,6 @@ var updateMover = function () {
         target.acceleration = v2.clone().multScalar(m2 - m1).add(v1.clone().multScalar(m1 * 2)).divScalar(m1 + m2).multScalar(0.8);
       }
     }
-    mover.applyFriction();
-    mover.applyForce(gravity);
     mover.updateVelocity();
     mover.updatePosition();
     mover.draw(ctx);

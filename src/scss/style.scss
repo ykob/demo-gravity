@@ -8,6 +8,17 @@ html {
 body {
   height: 100%;
   overflow: hidden;
+  font-family: 'Source Code Pro';
+}
+h1 {
+  position: absolute;
+  top: 10vh;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  color: #222;
+  font-size: 8vw;
+  text-align: center;
 }
 canvas {
   position: absolute;

@@ -18,7 +18,7 @@ var movers = [];
 var count_movers = 0;
 var unit_mover = 300;
 
-var gravity = new Vector2(0, 1.2);
+var gravity = new Vector2(0, 2);
 
 var init = function() {
   poolMover();
@@ -45,10 +45,10 @@ var updateMover = function () {
     
     if (!mover.is_active) continue;
 
-    if (mover.acceleration.length() < 1.2) {
+    if (mover.acceleration.length() < 2) {
       mover.time ++;
     }
-    if (mover.time > 500) {
+    if (mover.time > 300) {
       mover.radius -= mover.radius / 10;
     }
     if (mover.radius < 10) {
@@ -92,7 +92,7 @@ var updateMover = function () {
 
         mover.velocity.sub(target_normal.clone().multScalar(overlap / 2));
         target.velocity.sub(mover_normal.clone().multScalar(overlap / 2));
-        mover.rebound(target_normal, 0.5);
+        mover.rebound(target_normal, 0.7);
       }
     }
     mover.applyForce(gravity);

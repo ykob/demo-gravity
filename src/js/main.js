@@ -16,9 +16,9 @@ var is_touched = false;
 
 var movers = [];
 var count_movers = 0;
-var unit_mover = 300;
+var unit_mover = 100;
 
-var gravity = new Vector2(0, 2);
+var gravity = new Vector2(0, 1);
 
 var init = function() {
   poolMover();
@@ -45,63 +45,34 @@ var updateMover = function () {
     
     if (!mover.is_active) continue;
 
-    if (mover.acceleration.length() < 2) {
-      mover.time ++;
-    }
-    if (mover.time > 300) {
-      mover.radius -= mover.radius / 10;
-    }
-    if (mover.radius < 10) {
-      mover.inactivate();
-      continue;
-    }
+    // if (mover.acceleration.length() < 2) {
+    //   mover.time ++;
+    // }
+    // if (mover.time > 300) {
+    //   mover.radius -= mover.radius / 10;
+    // }
+    // if (mover.radius < 10) {
+    //   mover.inactivate();
+    //   continue;
+    // }
     
-    // 壁との衝突判定
-    if (mover.position.y - mover.radius < 0) {
-      // var normal = new Vector2(0, 1);
-      // mover.velocity.y = mover.radius;
-      // mover.rebound(normal, 0.6);
-    }
-    if (mover.position.y + mover.radius > body_height) {
-      var normal = new Vector2(0, -1);
-      mover.velocity.y = body_height - mover.radius;
-      mover.rebound(normal, 0.6);
-    }
-    if (mover.position.x - mover.radius < 0) {
-      var normal = new Vector2(1, 0);
-      mover.velocity.x = mover.radius;
-      mover.rebound(normal, 0.6);
-    }
-    if (mover.position.x + mover.radius > body_width) {
-      var normal = new Vector2(-1, 0);
-      mover.velocity.x = body_width - mover.radius;
-      mover.rebound(normal, 0.6);
-    }
-    //mover同士の衝突判定
-    for (var index = 0; index < movers.length; index++) {
-      if (index === i) continue;
-      
-      var target = movers[index];
-      var distance = mover.velocity.distanceTo(movers[index].velocity);
-      var rebound_distance = mover.radius + target.radius;
-      
-      if (distance < rebound_distance) {
-        var overlap = Math.abs(distance - rebound_distance);
-        var mover_normal = mover.velocity.clone().sub(target.velocity).normalize();
-        var target_normal = target.velocity.clone().sub(mover.velocity).normalize();
-
-        mover.velocity.sub(target_normal.clone().multScalar(overlap / 2));
-        target.velocity.sub(mover_normal.clone().multScalar(overlap / 2));
-        mover.rebound(target_normal, 0.7);
-      }
-    }
     mover.applyForce(gravity);
+    collideMover(mover, i, movers, false);
     mover.applyFriction();
+    collideMover(mover, i, movers, true);
+    mover.collideBorder(false, body_width, body_height, 0);
     mover.updateVelocity();
     mover.updatePosition();
     mover.draw(ctx);
   }
 };
+
+var collideMover = function(mover, i, movers, preserve_impulse) {
+  for (var index = 0; index < movers.length; index++) {
+    if (index === i) continue;
+    mover.collide(movers[index], preserve_impulse);
+  }
+}
 
 var activateMover = function () {
   var vector = new Vector2(Util.getRandomInt(0, body_width), body_height / 2 * -1);

@@ -22,7 +22,7 @@ var exports = function(){
   Mover.prototype = {
     init: function(vector, size) {
       this.radius = Util.getRandomInt(size, size * 4);
-      this.mass = this.radius / 10;
+      this.mass = this.radius * 1000;
       this.position = vector.clone();
       this.velocity = vector.clone();
       this.anchor = vector.clone();

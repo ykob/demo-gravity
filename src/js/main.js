@@ -56,16 +56,18 @@ var updateMover = function () {
       continue;
     }
     
+    mover.applyForce(gravity);
     // 壁との衝突判定
     if (mover.position.y - mover.radius < 0) {
       // var normal = new Vector2(0, 1);
       // mover.velocity.y = mover.radius;
-      // mover.rebound(normal, 0.6);
+      // mover.rebound(normal, 0.6); 
     }
     if (mover.position.y + mover.radius > body_height) {
       var normal = new Vector2(0, -1);
       mover.velocity.y = body_height - mover.radius;
       mover.rebound(normal, 0.6);
+      mover.acceleration.sub(gravity.clone().multScalar(-1));
     }
     if (mover.position.x - mover.radius < 0) {
       var normal = new Vector2(1, 0);
@@ -92,10 +94,17 @@ var updateMover = function () {
 
         mover.velocity.sub(target_normal.clone().multScalar(overlap / 2));
         target.velocity.sub(mover_normal.clone().multScalar(overlap / 2));
-        mover.rebound(target_normal, 0.7);
+        mover.rebound(target_normal, 0.6);
+        
+        // var v1 = mover.acceleration.clone();
+        // var m1 = mover.mass;
+        // var v2 = target.acceleration.clone();
+        // var m2 = target.mass;
+        
+        // mover.acceleration = v1.clone().multScalar(m1 - m2).add(v2.clone().multScalar(m2 * 2)).divScalar(m1 + m2);
+        // target.acceleration = v2.clone().multScalar(m2 - m1).add(v1.clone().multScalar(m1 * 2)).divScalar(m1 + m2);
       }
     }
-    mover.applyForce(gravity);
     mover.applyFriction();
     mover.updateVelocity();
     mover.updatePosition();
@@ -116,7 +125,7 @@ var activateMover = function () {
     
     if (mover.is_active) continue;
     
-    radian = Util.getRadian(Util.getRandomInt(70, 110));
+    radian = Util.getRadian(Util.getRandomInt(250, 290));
     scalar = Util.getRandomInt(10, 20);
     x = Math.cos(radian) * scalar;
     y = Math.sin(radian) * scalar;

@@ -16,7 +16,7 @@ var is_touched = false;
 
 var movers = [];
 var count_movers = 0;
-var unit_mover = 100;
+var unit_mover = 300;
 
 var gravity = new Vector2(0, 1);
 
@@ -48,7 +48,7 @@ var updateMover = function () {
     // if (mover.acceleration.length() < 2) {
     //   mover.time ++;
     // }
-    // if (mover.time > 300) {
+    // if (mover.time > 500) {
     //   mover.radius -= mover.radius / 10;
     // }
     // if (mover.radius < 10) {
@@ -57,14 +57,15 @@ var updateMover = function () {
     // }
     
     mover.applyForce(gravity);
-    collideMover(mover, i, movers, false);
-    mover.applyFriction();
-    collideMover(mover, i, movers, true);
-    mover.collideBorder(false, body_width, body_height, 0);
     mover.updateVelocity();
     mover.updatePosition();
-    mover.draw(ctx);
+    collideMover(mover, i, movers, true);
+    mover.collideBorder(false, body_width, body_height, 0);
+    collideMover(mover, i, movers, false);
   }
+  for (var i = 0; i < movers.length; i++) {
+    movers[i].draw(ctx);
+  };
 };
 
 var collideMover = function(mover, i, movers, preserve_impulse) {

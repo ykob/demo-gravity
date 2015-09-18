@@ -66,6 +66,7 @@ var exports = function(){
     collide: function(target, preserve_impulse) {
       var distance = this.velocity.distanceTo(target.velocity);
       var rebound_distance = this.radius + target.radius;
+      var damping = 0.9;
       
       if (distance < rebound_distance) {
         var overlap = Math.abs(distance - rebound_distance);
@@ -79,31 +80,37 @@ var exports = function(){
           var scalar1 = target.acceleration.length();
           var scalar2 = this.acceleration.length();
           
-          this.acceleration.sub(this_normal.multScalar(scalar1 / -2)).multScalar(0.9);
-          target.acceleration.sub(target_normal.multScalar(scalar2 / -2)).multScalar(0.9);
+          this.acceleration.sub(this_normal.multScalar(scalar1 / -2)).multScalar(damping);
+          target.acceleration.sub(target_normal.multScalar(scalar2 / -2)).multScalar(damping);
+          if (Math.abs(this.acceleration.x) < 1) this.acceleration.x = 0;
+          if (Math.abs(this.acceleration.y) < 1) this.acceleration.y = 0;
+          if (Math.abs(target.acceleration.x) < 1) target.acceleration.x = 0;
+          if (Math.abs(target.acceleration.y) < 1) target.acceleration.y = 0;
         }
       }
     },
     collideBorder: function(top, right, bottom, left, preserve_impulse) {
+      var damping = 0.8;
+      
       if (top !== false && this.position.y - this.radius < top) {
         var normal = new Vector2(0, 1);
         this.velocity.y = this.radius;
-        if (preserve_impulse) this.acceleration.y *= -0.6;
+        if (preserve_impulse) this.acceleration.y *= -1 * damping;
       }
       if (right !== false && this.position.x + this.radius > right) {
         var normal = new Vector2(-1, 0);
         this.velocity.x = right - this.radius;
-        if (preserve_impulse) this.acceleration.x *= -0.6;
+        if (preserve_impulse) this.acceleration.x *= -1 * damping;
       }
       if (bottom !== false && this.position.y + this.radius > bottom) {
         var normal = new Vector2(0, -1);
         this.velocity.y = bottom - this.radius;
-        if (preserve_impulse) this.acceleration.y *= -0.6;
+        if (preserve_impulse) this.acceleration.y *= -1 * damping;
       }
       if (left !== false && this.position.x - this.radius < left) {
         var normal = new Vector2(1, 0);
         this.velocity.x = this.radius;
-        if (preserve_impulse) this.acceleration.x *= -0.6;
+        if (preserve_impulse) this.acceleration.x *= -1 * damping;
       }
     },
     draw: function(context) {

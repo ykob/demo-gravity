@@ -48,7 +48,7 @@ var updateMover = function () {
     if (mover.acceleration.length() < 2) {
       mover.time ++;
     }
-    if (mover.time > 300) {
+    if (mover.time > 20) {
       mover.radius -= mover.radius / 10;
     }
     if (mover.radius < 10) {
@@ -61,6 +61,8 @@ var updateMover = function () {
     mover.updateVelocity();
     collideMover(mover, i, movers, true);
     mover.collideBorder(false, body_width, body_height, 0, true);
+    collideMover(mover, i, movers, false);
+    collideMover(mover, i, movers, false);
     collideMover(mover, i, movers, false);
     mover.updatePosition();
     movers[i].draw(ctx);
@@ -111,7 +113,7 @@ var renderloop = function() {
   
   requestAnimationFrame(renderloop);
   render();
-  if (now - last_time_activate > 100) {
+  if (now - last_time_activate > 10) {
     activateMover();
     last_time_activate = Date.now();
   }

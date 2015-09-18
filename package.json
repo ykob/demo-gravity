@@ -1,7 +1,7 @@
 {
   "name": "demo-gravity",
   "version": "0.0.1",
-  "description": "",
+  "description": "重力＋衝突のテスト。",
   "repository": {
     "type": "git",
     "url": "https://github.com/ykob/demo-gravity.git"

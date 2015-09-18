@@ -45,27 +45,26 @@ var updateMover = function () {
     
     if (!mover.is_active) continue;
 
-    // if (mover.acceleration.length() < 2) {
-    //   mover.time ++;
-    // }
-    // if (mover.time > 500) {
-    //   mover.radius -= mover.radius / 10;
-    // }
-    // if (mover.radius < 10) {
-    //   mover.inactivate();
-    //   continue;
-    // }
+    if (mover.acceleration.length() < 2) {
+      mover.time ++;
+    }
+    if (mover.time > 300) {
+      mover.radius -= mover.radius / 10;
+    }
+    if (mover.radius < 10) {
+      mover.inactivate();
+      continue;
+    }
     
     mover.applyForce(gravity);
+    mover.applyFriction();
     mover.updateVelocity();
-    mover.updatePosition();
     collideMover(mover, i, movers, true);
-    mover.collideBorder(false, body_width, body_height, 0);
+    mover.collideBorder(false, body_width, body_height, 0, true);
     collideMover(mover, i, movers, false);
-  }
-  for (var i = 0; i < movers.length; i++) {
+    mover.updatePosition();
     movers[i].draw(ctx);
-  };
+  }
 };
 
 var collideMover = function(mover, i, movers, preserve_impulse) {

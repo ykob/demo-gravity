@@ -22,7 +22,7 @@ var exports = function(){
   Mover.prototype = {
     init: function(vector, size) {
       this.radius = Util.getRandomInt(size, size * 4);
-      this.mass = this.radius * 1000;
+      this.mass = this.radius / 100;
       this.position = vector.clone();
       this.velocity = vector.clone();
       this.anchor = vector.clone();
@@ -79,8 +79,8 @@ var exports = function(){
           var scalar1 = target.acceleration.length();
           var scalar2 = this.acceleration.length();
           
-          this.acceleration.sub(this_normal.multScalar(scalar1 / -2)).multScalar(0.8);
-          target.acceleration.sub(target_normal.multScalar(scalar2 / -2)).multScalar(0.8);
+          this.acceleration.sub(this_normal.multScalar(scalar1 / -2)).multScalar(0.9);
+          target.acceleration.sub(target_normal.multScalar(scalar2 / -2)).multScalar(0.9);
         }
       }
     },
@@ -88,22 +88,22 @@ var exports = function(){
       if (top !== false && this.position.y - this.radius < top) {
         var normal = new Vector2(0, 1);
         this.velocity.y = this.radius;
-        this.acceleration.y *= -0.6;
+        if (preserve_impulse) this.acceleration.y *= -0.6;
       }
       if (right !== false && this.position.x + this.radius > right) {
         var normal = new Vector2(-1, 0);
         this.velocity.x = right - this.radius;
-        this.acceleration.x *= -0.6;
+        if (preserve_impulse) this.acceleration.x *= -0.6;
       }
       if (bottom !== false && this.position.y + this.radius > bottom) {
         var normal = new Vector2(0, -1);
         this.velocity.y = bottom - this.radius;
-        this.acceleration.y *= -0.6;
+        if (preserve_impulse) this.acceleration.y *= -0.6;
       }
       if (left !== false && this.position.x - this.radius < left) {
         var normal = new Vector2(1, 0);
         this.velocity.x = this.radius;
-        this.acceleration.x *= -0.6;
+        if (preserve_impulse) this.acceleration.x *= -0.6;
       }
     },
     draw: function(context) {

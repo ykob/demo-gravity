@@ -54,11 +54,6 @@ var exports = function(){
       var force = Force.hook(this.velocity, this.anchor, this.k);
       this.applyForce(force);
     },
-    rebound: function(vector, e) {
-      var dot = this.acceleration.clone().dot(vector);
-      this.acceleration.sub(vector.multScalar(2 * dot));
-      this.acceleration.multScalar(e);
-    },
     direct: function(vector) {
       var v = vector.clone().sub(this.position);
       this.direction = Math.atan2(v.y, v.x);

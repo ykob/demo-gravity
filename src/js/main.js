@@ -48,7 +48,7 @@ var updateMover = function () {
     if (mover.acceleration.length() < 2) {
       mover.time ++;
     }
-    if (mover.time > 20) {
+    if (mover.time > 100) {
       mover.radius -= mover.radius / 10;
     }
     if (mover.radius < 10) {
@@ -60,7 +60,7 @@ var updateMover = function () {
     mover.applyFriction();
     mover.updateVelocity();
     collideMover(mover, i, movers, true);
-    mover.collideBorder(false, body_width, body_height, 0, true);
+    collideBorder(mover, true);
     collideMover(mover, i, movers, false);
     collideMover(mover, i, movers, false);
     collideMover(mover, i, movers, false);
@@ -72,12 +72,61 @@ var updateMover = function () {
 var collideMover = function(mover, i, movers, preserve_impulse) {
   for (var index = 0; index < movers.length; index++) {
     if (index === i) continue;
-    mover.collide(movers[index], preserve_impulse);
+    var target = movers[index];
+    var distance = mover.velocity.distanceTo(target.velocity);
+    var rebound_distance = mover.radius + target.radius;
+    var damping = 0.8;
+    
+    if (distance < rebound_distance) {
+      var overlap = Math.abs(distance - rebound_distance);
+      var this_normal = mover.velocity.clone().sub(target.velocity).normalize();
+      var target_normal = target.velocity.clone().sub(mover.velocity).normalize();
+
+      mover.velocity.sub(target_normal.clone().multScalar(overlap / 2));
+      target.velocity.sub(this_normal.clone().multScalar(overlap / 2));
+      
+      if(preserve_impulse){
+        var scalar1 = target.acceleration.length();
+        var scalar2 = mover.acceleration.length();
+        
+        mover.acceleration.sub(this_normal.multScalar(scalar1 / -2)).multScalar(damping);
+        target.acceleration.sub(target_normal.multScalar(scalar2 / -2)).multScalar(damping);
+        if (Math.abs(mover.acceleration.x) < 1) mover.acceleration.x = 0;
+        if (Math.abs(mover.acceleration.y) < 1) mover.acceleration.y = 0;
+        if (Math.abs(target.acceleration.x) < 1) target.acceleration.x = 0;
+        if (Math.abs(target.acceleration.y) < 1) target.acceleration.y = 0;
+      }
+    }
   }
-}
+};
+
+var collideBorder = function(mover, preserve_impulse) {
+  var damping = 0.8;
+  
+  // if (mover.position.y - mover.radius < 0) {
+  //   var normal = new Vector2(0, 1);
+  //   mover.velocity.y = mover.radius;
+  //   if (preserve_impulse) mover.acceleration.y *= -1 * damping;
+  // }
+  if (mover.position.x + mover.radius > body_width) {
+    var normal = new Vector2(-1, 0);
+    mover.velocity.x = body_width - mover.radius;
+    if (preserve_impulse) mover.acceleration.x *= -1 * damping;
+  }
+  if (mover.position.y + mover.radius > body_height) {
+    var normal = new Vector2(0, -1);
+    mover.velocity.y = body_height - mover.radius;
+    if (preserve_impulse) mover.acceleration.y *= -1 * damping;
+  }
+  if (mover.position.x - mover.radius < 0) {
+    var normal = new Vector2(1, 0);
+    mover.velocity.x = mover.radius;
+    if (preserve_impulse) mover.acceleration.x *= -1 * damping;
+  }
+};
 
 var activateMover = function () {
-  var vector = new Vector2(Util.getRandomInt(0, body_width), body_height / 2 * -1);
+  var vector = new Vector2(Util.getRandomInt(0, body_width), body_height / 5 * -1);
   var radian = 0;
   var scalar = 0;
   var x = 0;

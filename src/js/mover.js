@@ -47,7 +47,7 @@ var exports = function(){
       this.applyForce(friction);
     },
     applyDragForce: function() {
-      var drag = Force.drag(this.acceleration, 0.5);
+      var drag = Force.drag(this.acceleration, 0.1);
       this.applyForce(drag);
     },
     hook: function() {

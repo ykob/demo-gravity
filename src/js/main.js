@@ -48,7 +48,7 @@ var updateMover = function () {
     if (mover.acceleration.length() < 2) {
       mover.time ++;
     }
-    if (mover.time > 100) {
+    if (mover.time > 20) {
       mover.radius -= mover.radius / 10;
     }
     if (mover.radius < 10) {
@@ -75,7 +75,7 @@ var collideMover = function(mover, i, movers, preserve_impulse) {
     var target = movers[index];
     var distance = mover.velocity.distanceTo(target.velocity);
     var rebound_distance = mover.radius + target.radius;
-    var damping = 0.8;
+    var damping = 0.9;
     
     if (distance < rebound_distance) {
       var overlap = Math.abs(distance - rebound_distance);
@@ -101,7 +101,7 @@ var collideMover = function(mover, i, movers, preserve_impulse) {
 };
 
 var collideBorder = function(mover, preserve_impulse) {
-  var damping = 0.8;
+  var damping = 0.6;
   
   // if (mover.position.y - mover.radius < 0) {
   //   var normal = new Vector2(0, 1);

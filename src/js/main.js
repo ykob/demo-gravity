@@ -82,15 +82,15 @@ var collideMover = function(mover, i, movers, preserve_impulse) {
       var this_normal = mover.velocity.clone().sub(target.velocity).normalize();
       var target_normal = target.velocity.clone().sub(mover.velocity).normalize();
 
-      mover.velocity.sub(target_normal.clone().multScalar(overlap / 2));
-      target.velocity.sub(this_normal.clone().multScalar(overlap / 2));
+      mover.velocity.sub(target_normal.clone().multiplyScalar(overlap / 2));
+      target.velocity.sub(this_normal.clone().multiplyScalar(overlap / 2));
       
       if(preserve_impulse){
         var scalar1 = target.acceleration.length();
         var scalar2 = mover.acceleration.length();
         
-        mover.acceleration.sub(this_normal.multScalar(scalar1 / -2)).multScalar(damping);
-        target.acceleration.sub(target_normal.multScalar(scalar2 / -2)).multScalar(damping);
+        mover.acceleration.sub(this_normal.multiplyScalar(scalar1 / -2)).multiplyScalar(damping);
+        target.acceleration.sub(target_normal.multiplyScalar(scalar2 / -2)).multiplyScalar(damping);
         if (Math.abs(mover.acceleration.x) < 1) mover.acceleration.x = 0;
         if (Math.abs(mover.acceleration.y) < 1) mover.acceleration.y = 0;
         if (Math.abs(target.acceleration.x) < 1) target.acceleration.x = 0;
@@ -138,7 +138,7 @@ var activateMover = function () {
     
     if (mover.is_active) continue;
     
-    radian = Util.getRadian(Util.getRandomInt(70, 110));
+    radian = Util.getRadian(Util.getRandomInt(89.9, 90.1));
     scalar = Util.getRandomInt(10, 20);
     x = Math.cos(radian) * scalar;
     y = Math.sin(radian) * scalar;
